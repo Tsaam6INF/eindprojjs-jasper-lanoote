@@ -283,6 +283,47 @@ app.get('/api/users/:username', async (req, res) => {
   }
 })
 
+app.post('/api/posts/:id/comments', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { text } = req.body;
+
+  try {
+    const result = await dbRun(
+      'INSERT INTO comments (user_id, post_id, text) VALUES (?, ?, ?)',
+      [req.user.id, id, text]
+    );
+
+    const newComment = {
+      id: result.lastID,
+      user_id: req.user.id,
+      post_id: id,
+      text,
+      created_at: new Date().toISOString()
+    };
+
+    res.json(newComment);
+  } catch (err) {
+    console.error('Error adding comment:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/api/posts/:id/comments', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const comments = await dbAll(
+      'SELECT c.*, u.username FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = ? ORDER BY c.created_at DESC',
+      [id]
+    );
+
+    res.json(comments);
+  } catch (err) {
+    console.error('Error fetching comments:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Server error:', err)

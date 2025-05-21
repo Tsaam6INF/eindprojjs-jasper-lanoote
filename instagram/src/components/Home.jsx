@@ -4,6 +4,7 @@ import "./Home.css";
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
+  const [comments, setComments] = useState({});
 
   useEffect(() => {
     fetchPosts();
@@ -23,6 +24,29 @@ const Home = () => {
       setError("Error loading posts");
     }
   };
+
+  const fetchComments = async (postId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/posts/${postId}/comments`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      setComments((prevComments) => ({ ...prevComments, [postId]: data }));
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+    }
+  };
+
+  useEffect(() => {
+    posts.forEach((post) => {
+      fetchComments(post.id);
+    });
+  }, [posts]);
 
   const handleLike = async (postId) => {
     try {
@@ -59,6 +83,34 @@ const Home = () => {
     }
   };
 
+  const handleAddComment = async (postId, text) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/posts/${postId}/comments`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error adding comment");
+      }
+
+      const newComment = await response.json();
+      setComments((prevComments) => ({
+        ...prevComments,
+        [postId]: [...(prevComments[postId] || []), newComment],
+      }));
+    } catch (err) {
+      console.error("Error adding comment:", err);
+    }
+  };
+
   if (error) {
     return <div className="error-message">{error}</div>;
   }
@@ -71,7 +123,11 @@ const Home = () => {
             <div className="post-header">
               <span className="post-username">{post.username}</span>
             </div>
-            <img src={post.image_path} alt={post.caption} />
+            <img
+              src={`http://localhost:3000${post.image_path}`}
+              alt={post.caption}
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
             <div className="post-info">
               <div className="post-actions">
                 <button
@@ -86,6 +142,31 @@ const Home = () => {
                 <span className="post-username">{post.username}</span>{" "}
                 {post.caption}
               </p>
+              <div className="comments-section">
+                {comments[post.id]?.map((comment) => (
+                  <p key={comment.id} className="comment">
+                    <span className="comment-username">{comment.username}</span>{" "}
+                    {comment.text}
+                  </p>
+                ))}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const text = e.target.comment.value;
+                    if (text) {
+                      handleAddComment(post.id, text);
+                      e.target.comment.value = "";
+                    }
+                  }}
+                >
+                  <input
+                    type="text"
+                    name="comment"
+                    placeholder="Add a comment..."
+                  />
+                  <button type="submit">Post</button>
+                </form>
+              </div>
             </div>
           </div>
         ))}

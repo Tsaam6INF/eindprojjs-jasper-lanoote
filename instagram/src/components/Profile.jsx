@@ -188,7 +188,11 @@ const Profile = () => {
       <div className="posts-grid">
         {posts.map((post) => (
           <div key={post.id} className="post-card">
-            <img src={post.image_path} alt={post.caption} />
+            <img
+              src={`http://localhost:3000${post.image_path}`}
+              alt={post.caption}
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
             <div className="post-info">
               <p className="post-caption">{post.caption}</p>
               <div className="post-actions">
