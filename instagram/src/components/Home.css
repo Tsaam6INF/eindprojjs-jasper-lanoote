@@ -19,9 +19,29 @@
   gap: 12px;
 }
 
+.post-user-info {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+.post-user-info:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.post-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .post-username {
   font-weight: 600;
   color: #262626;
+  font-size: 14px;
 }
 
 .post-image {

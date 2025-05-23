@@ -288,6 +288,8 @@ app.post('/api/posts/:id/comments', authenticateToken, async (req, res) => {
   const { text } = req.body;
 
   try {
+    console.log('Adding comment:', { postId: id, userId: req.user.id, text });
+
     const result = await dbRun(
       'INSERT INTO comments (user_id, post_id, text) VALUES (?, ?, ?)',
       [req.user.id, id, text]
@@ -301,10 +303,11 @@ app.post('/api/posts/:id/comments', authenticateToken, async (req, res) => {
       created_at: new Date().toISOString()
     };
 
+    console.log('Comment added successfully:', newComment);
     res.json(newComment);
   } catch (err) {
     console.error('Error adding comment:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
@@ -320,7 +323,7 @@ app.get('/api/posts/:id/comments', async (req, res) => {
     res.json(comments);
   } catch (err) {
     console.error('Error fetching comments:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 

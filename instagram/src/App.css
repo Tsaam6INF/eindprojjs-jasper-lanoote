@@ -8,19 +8,21 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: #fafafa;
+  display: flex;
+  justify-content: center;
 }
 
 .app-container {
   display: flex;
   min-height: 100vh;
   background-color: #fafafa;
+  width: 100%;
+  max-width: 935px;
 }
 
 .main-content {
   flex: 1;
-  margin-left: 244px;
   padding: 84px 20px 20px;
-  max-width: 935px;
   width: 100%;
 }
 
@@ -69,45 +71,6 @@ body {
   font-weight: bold;
   color: #262626;
   text-decoration: none;
-}
-
-.sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 244px;
-  background-color: white;
-  border-right: 1px solid #dbdbdb;
-  padding: 84px 20px 20px;
-  overflow-y: auto;
-  z-index: 999;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.sidebar-nav a {
-  text-decoration: none;
-  color: #262626;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
-
-.sidebar-nav a:hover {
-  color: #0095f6;
-}
-
-.sidebar-nav a.active {
-  color: #0095f6;
 }
 
 /* Form styles */

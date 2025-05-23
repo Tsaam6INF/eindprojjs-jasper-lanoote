@@ -35,25 +35,6 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        {isAuthenticated && (
-          <nav className="sidebar">
-            <div className="sidebar-nav">
-              <a href="/" className="active">
-                <span>🏠</span>
-                <span>Home</span>
-              </a>
-              <a href={`/profile/${user?.username}`}>
-                <span>👤</span>
-                <span>Profile</span>
-              </a>
-              <a href="#" onClick={handleLogout}>
-                <span>🚪</span>
-                <span>Logout</span>
-              </a>
-            </div>
-          </nav>
-        )}
-
         <div className="main-content">
           <Navbar
             isAuthenticated={isAuthenticated}
